@@ -96,11 +96,14 @@ const deleteCategory = async(req, res) => {
       return res.status(400).json({
         message: "Danh mục vẫn còn chứa sản phẩm nên không thể xoá"
       })
+    } else {
+      await Category.findByIdAndDelete(categoryId);
+      return res.status(200).json({
+        message: "Xoa thanh cong",
+        data: categoryDelete
+      })
     }
-    return res.status(200).json({
-      message: "Xoa thanh cong",
-      data: categoryDelete
-    })
+    
   } catch (error) {
     res.status(400).json({
       message: error.message
