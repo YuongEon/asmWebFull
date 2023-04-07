@@ -60,8 +60,9 @@ const AdminProducts = (props: any) => {
       dataIndex: "price",
       key: "price",
       sorter: (record1, record2) : any => {
-        return record1.price > record2.price
+        return record1.price - record2.price
       }, 
+      sortDirections : ['descend', 'ascend'],
       render: (price) => <span>${price}</span>,
     },
     {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 // import './App.css'
 import { Home, NotFound, Products } from './pages'
 import WebLayout from './pages/layout/WebLayout'
@@ -20,14 +20,18 @@ import { AdminCategoriesUpdate } from './pages/admin/AdminProduct/CategoryM/Admi
 import { Alert, message, Space } from 'antd';
 
 const App: React.FC = () => {
+
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState<IProduct[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [keyword, setKeyword] = useState<string>("")
   const [errorMess, setErrorMess] = useState([])
+  const [options, setOptions] = useState<{[key:string]: any}>({})
 
   useEffect(() => {
-    getAllProduct(keyword).then(({data}) => setProducts(data));
-  }, [keyword])
+    getAllProduct({keyword: keyword, ...options}).then(({data}) => setProducts(data));
+  }, [keyword, options])
   
   useEffect(() => {
     getAllCategory().then(({data}) => setCategories(data));
@@ -36,17 +40,20 @@ const App: React.FC = () => {
   // product request
   const onHandleAddProduct = (product: IProduct) => {
     createProduct(product)
-    .then(() => getAllProduct(keyword).then(({data}) => setProducts(data)))
+    .then(() => getAllProduct({})
+      .then(({data}) => setProducts(data))
+      .then(() => navigate('/admin/products'))
+    )
     .catch((error) => {
       setErrorMess(error?.response?.data?.message)
     })
   }
   
   const onHandleUpdateProduct = (id: any ,product: IProduct) => {
-    updateProduct(id,product).then(() => getAllProduct(keyword).then(({data}) => setProducts(data)))
+    updateProduct(id,product).then(() => getAllProduct({}).then(({data}) => setProducts(data)))
   }
   const onHandleDeleteProduct = (id: any) => {
-    deleteProduct(id).then(() => getAllProduct(keyword).then(({data}) => setProducts(data)));
+    deleteProduct(id).then(() => getAllProduct({}).then(({data}) => setProducts(data)));
   }
 
   // category request
@@ -73,7 +80,7 @@ const App: React.FC = () => {
         {/* user */}
         <Route path='/' element={<WebLayout/>}>
           <Route index element={<Home/>}/>
-          <Route path='products' element={<Products products={products}/>} />
+          <Route path='products' element={<Products products={products} onOptions={setOptions}/>} />
           <Route path='products/:id' element={<ProductDetail products={products}/>} />
         </Route>
 
@@ -84,7 +91,7 @@ const App: React.FC = () => {
         <Route path='/admin' element={<AdminLayout/>}>
           <Route index element={<AdminPage/>}/>
           <Route path='products'>
-            <Route index element={<AdminProducts products={products} onDelete={onHandleDeleteProduct} onKeyword={setKeyword}/>} />
+            <Route index element={<AdminProducts products={products} onDelete={onHandleDeleteProduct} onKeyword={setKeyword} />} />
             <Route path=':id' element={<AdminProductsUpdate products={products} categories={categories} onUpdate={onHandleUpdateProduct}/>} />
             <Route path='add' element={<AdminProductsAdd categories={categories} onAdd={onHandleAddProduct} addErr={errorMess}/>} />
           </Route>

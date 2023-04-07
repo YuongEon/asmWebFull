@@ -3,8 +3,8 @@ import instance from "./instance";
 
 export {};
 
-const getAllProduct = (keyword: string) => {
-  return instance.get(`/products?keyword=${keyword}`);
+const getAllProduct = (options: {[key: string]: any}) => {
+  return instance.get(`/products?keyword=${options?.keyword}&_page=${options?._page}&_limit=${options?._limit}`);
 };
 
 const getOneProduct = (id: any) => {

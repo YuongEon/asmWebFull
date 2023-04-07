@@ -14,39 +14,39 @@ const productSchema = joi.object({
 
 const getAll = async (req, res) => {
   const {
-    _sort = "createAt",
-    _order = "asc",
-    _limit = 10,
-    _page = 1,
+    _sort,
+    _order,
+    _limit,
+    _page,
     keyword
   } = req.query;
 
   const options = {
     page: _page,
     limit: _limit,
-    sort: {
-      [_sort]: _order === "desc" ? -1 : 1,
-    },
+    keyword: keyword
   };
 
-  const searchData = (data) => {
-    const {docs} = data
-    return docs?.filter((item) => item.name.toLowerCase().includes(keyword))
-  }
+  // const searchData = (data) => {
+  //   const {docs} = data
+  //   return docs?.filter((item) => item.name.toLowerCase().includes(keyword))
+  // }
+  console.log(options);
 
   try {
     const products = await Product.paginate({}, options);
+    console.log(products);
     if (products.length === 0 || products.docs.length === 0) {
       return res.status(400).json({
         message: "Khong co san pham nao",
       });
     }
 
-    let searchDataProduct = await searchData(products)
-    let productExport = await {...products, docs: searchDataProduct}
+    // let searchDataProduct = await searchData(products)
+    // let productExport = await {...products, docs: searchDataProduct}
 
-    return res.json(productExport);
-    
+    return res.json(products);
+
   } catch (error) {
     return res.status(400).json({
       message: error.message,

@@ -110,7 +110,7 @@ const AdminProductsAdd = (props: any) => {
       </Form.Item>
     </Form>
     {
-      addErr && (
+      addErr.length >= 1 && (
         <Alert
           message="Add error"
           description={convertErrorMess(addErr)}
