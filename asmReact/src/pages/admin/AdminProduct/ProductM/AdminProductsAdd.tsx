@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, Input, Select, InputNumber } from "antd";
+import { Button, Form, Input, Select, InputNumber, Alert } from "antd";
 import { Category } from "../../../../types/categoryType";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
@@ -15,9 +15,17 @@ const tailLayout = {
 };
 
 const AdminProductsAdd = (props: any) => {
-  const {categories, onAdd} = props;
+  const {categories, onAdd, addErr} = props;
   const navigate = useNavigate()
+  console.log(addErr);
   
+  const convertErrorMess = (data: string[]) => {
+    if(data.length > 1){
+      return data.join('\n')
+    } else {
+      return data.join('')
+    }
+  }
 
   const [form] = Form.useForm();
   const onGenderChange = (value: string) => {
@@ -37,11 +45,12 @@ const AdminProductsAdd = (props: any) => {
 
   const onFinish = (values: any) => {
     onAdd(values);
-    navigate('/admin/products');
+    // navigate('/admin/products');
   };
 
 
   return (
+    <section>
     <Form
       {...layout}
       form={form}
@@ -52,8 +61,8 @@ const AdminProductsAdd = (props: any) => {
       <Form.Item name="name" label="Name" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="price" label="Price" rules={[{ required: true }]}>
-      <InputNumber min={0} style={{width: '200px'}}/>
+      <Form.Item name="price" label="Price" rules={[{ required: true }, {pattern: /[0-9]*/, message: 'Price must be number type'}]}>
+        <Input prefix="$" min={0} style={{width: '200px'}} />
       </Form.Item>
       <Form.Item name="quantity" label="Quantity" rules={[{ required: true }]}>
         <InputNumber placeholder="Quantity (Min: 10)" min={10} style={{width: '200px'}}/>
@@ -100,6 +109,16 @@ const AdminProductsAdd = (props: any) => {
         </Button>
       </Form.Item>
     </Form>
+    {
+      addErr && (
+        <Alert
+          message="Add error"
+          description={convertErrorMess(addErr)}
+          type="error"
+        />
+      )
+    }
+    </section>
   );
 };
 

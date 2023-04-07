@@ -23,6 +23,7 @@ const App: React.FC = () => {
   const [products, setProducts] = useState<IProduct[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [keyword, setKeyword] = useState<string>("")
+  const [errorMess, setErrorMess] = useState([])
 
   useEffect(() => {
     getAllProduct(keyword).then(({data}) => setProducts(data));
@@ -34,8 +35,13 @@ const App: React.FC = () => {
 
   // product request
   const onHandleAddProduct = (product: IProduct) => {
-    createProduct(product).then(() => getAllProduct(keyword).then(({data}) => setProducts(data)));
+    createProduct(product)
+    .then(() => getAllProduct(keyword).then(({data}) => setProducts(data)))
+    .catch((error) => {
+      setErrorMess(error?.response?.data?.message)
+    })
   }
+  
   const onHandleUpdateProduct = (id: any ,product: IProduct) => {
     updateProduct(id,product).then(() => getAllProduct(keyword).then(({data}) => setProducts(data)))
   }
@@ -80,7 +86,7 @@ const App: React.FC = () => {
           <Route path='products'>
             <Route index element={<AdminProducts products={products} onDelete={onHandleDeleteProduct} onKeyword={setKeyword}/>} />
             <Route path=':id' element={<AdminProductsUpdate products={products} categories={categories} onUpdate={onHandleUpdateProduct}/>} />
-            <Route path='add' element={<AdminProductsAdd categories={categories} onAdd={onHandleAddProduct}/>} />
+            <Route path='add' element={<AdminProductsAdd categories={categories} onAdd={onHandleAddProduct} addErr={errorMess}/>} />
           </Route>
           
           <Route path='categories'>
