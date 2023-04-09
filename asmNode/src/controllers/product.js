@@ -16,9 +16,9 @@ const getAll = async (req, res) => {
   const {
     _sort,
     _order,
-    _limit,
-    _page,
-    keyword
+    _limit = 10,
+    _page = 1,
+    keyword = ""
   } = req.query;
 
   const options = {
@@ -31,7 +31,7 @@ const getAll = async (req, res) => {
   //   const {docs} = data
   //   return docs?.filter((item) => item.name.toLowerCase().includes(keyword))
   // }
-  console.log(options);
+
 
   try {
     const products = await Product.paginate({}, options);
@@ -42,10 +42,10 @@ const getAll = async (req, res) => {
       });
     }
 
-    // let searchDataProduct = await searchData(products)
-    // let productExport = await {...products, docs: searchDataProduct}
+    let searchDataProduct = products.docs.filter((item) => item.name.toLowerCase().includes(keyword));
+    let productExport =  {...products, docs: searchDataProduct}
 
-    return res.json(products);
+    return res.json(productExport);
 
   } catch (error) {
     return res.status(400).json({
