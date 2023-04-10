@@ -17,27 +17,41 @@ const suffix = (
   />
 );
 
-
-const AdminProducts = (props: any) => {
-  const { docs } = props.products;
-  const {onDelete, onKeyword} = props;
+interface IProps {
+  [key: string]: any,
+  products: {
+    [key: string]: any
+  }
+}
+const AdminProducts = ({products, onDelete, onKeyword, onOptions}: IProps) => {
+  const { docs } = products;
 
   const[data, setData] = useState<IProduct[]>([])
+  const [page, setPage] = useState<number>(1)
 
   useEffect(() => {
     setData(docs);
-  }, [props])
+  }, [products])
+
+
+
+  const options = {
+    _page: page,
+    _limit: 10
+  }
+
+  useEffect(() => {
+    onOptions(options)
+  }, [page])
 
   const deleteProduct = (id: any) => {
-    onDelete(id);
+    const isDelete = window.confirm("Bạn có muốn xoá không?");
+    isDelete && onDelete(id);
   }
 
   const onSearch = (value: string) => onKeyword(value);
 
-  const onHandleChange = (e: any) => {
-    e.preventDefault();
-    console.log(e.target.value);
-    
+  const onHandleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     onKeyword(e.target.value)
   }
 
@@ -60,7 +74,7 @@ const AdminProducts = (props: any) => {
       dataIndex: "price",
       key: "price",
       sorter: (record1, record2) : any => {
-        return record1.price - record2.price
+        return record2.price - record1.price
       }, 
       sortDirections : ['descend', 'ascend'],
       render: (price) => <span>${price}</span>,
@@ -87,7 +101,7 @@ const AdminProducts = (props: any) => {
   return (
     <div>
       <Search placeholder="nhập tên sản phẩm" allowClear onChange={onHandleChange}  style={{ width: 200, marginBottom: '20px' }} />
-      <ItemListTable columns={columns} data={data} />
+      <ItemListTable columns={columns} data={docs} />
     </div>
   );
 };

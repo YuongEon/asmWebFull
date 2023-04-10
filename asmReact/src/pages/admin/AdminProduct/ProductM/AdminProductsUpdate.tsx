@@ -48,6 +48,8 @@ const AdminProductsUpdate = (props: any) => {
   
 
   const onFinish = (values: any) => {
+    values.name = values.name.trim()
+    values.description = values.description.trim()
     onUpdate(id, values)
     navigate('/admin/products')
   };

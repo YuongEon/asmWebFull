@@ -38,6 +38,7 @@ export const AdminCategoriesUpdate = (props: any) => {
   })
 
   const onFinish = (values: any) => {
+    values.name = values.name.trim()
     onUpdate(values);
     navigate('/admin/categories')
   };

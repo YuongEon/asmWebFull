@@ -44,8 +44,10 @@ const AdminProductsAdd = (props: any) => {
   };
 
   const onFinish = (values: any) => {
+    values.name = values.name.trim()
+    values.description = values.description.trim()
     onAdd(values);
-    // navigate('/admin/products');
+    navigate('/admin/products');
   };
 
 

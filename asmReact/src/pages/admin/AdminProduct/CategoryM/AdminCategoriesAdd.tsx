@@ -20,6 +20,7 @@ const AdminCategoriesAdd = (props: any) => {
   const navigate = useNavigate();
 
   const onFinish = (values: any) => {
+    values.name = values.name.trim()
     onAdd(values);
     navigate('/admin/categories');
   };

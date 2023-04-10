@@ -1,9 +1,11 @@
 import React from "react";
 import { headerNav } from "../../data/Navigation";
 import Navigation from "../Navigation";
+import Register from "../Register";
 import SearchBar from "../SearchBar";
 
-const Header = () => {
+const Header = ({role}: any) => {
+  
   return (
     // <div>
     //   <Navigation data={headerNav}/>
@@ -94,21 +96,7 @@ const Header = () => {
 
         <Navigation data={headerNav}/>
 
-        <div className="hidden items-center gap-4 lg:flex">
-          <a
-            href="#"
-            className="rounded-lg bg-gray-100 px-5 py-2 text-sm font-medium text-gray-600"
-          >
-            Log in
-          </a>
-
-          <a
-            href="#"
-            className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white"
-          >
-            Sign up
-          </a>
-        </div>
+        <Register role={role}/>
       </div>
 
       <div className="border-t border-gray-100 lg:hidden">
